@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: data-platform-function-product-stock-availability-check
+  name: data-platform-function-product-stock-availability-check
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: data-platform-function-product-stock-availability-check
+  template:
+    metadata:
+      labels:
+        run: data-platform-function-product-stock-availability-check
+    spec:
+      nodeName: worker
+      hostname: data-platform-function-product-stock-availability-check
+      containers:
+        - name: data-platform-function-product-stock-availability-check
+          image: latonaio/data-platform-function-product-stock-availability-check
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/aion/Data
+            - name: ui
+              mountPath: /var/lib/aion/UI/data-platform-function-product-stock-availability-check/public/
+          env:
+            - name : "RMQ_QUEUE_FROM"
+              value: "data-platform-function-product-stock-availability-check-queue"
+            - name : "RMQ_QUEUE_TO"
+              value: "data-platform-function-product-stock-availability-check-queue"
+            - name : "MYSQL_DB_NAME"
+              value: "DataPlatformMastersAndTransactionsMysqlKube"
+          envFrom:
+            - configMapRef:
+                name: env-config
+            - secretRef:
+                name: env-secret
+      volumes:
+        - name: data
+          hostPath:
+            path: /var/lib/aion/default/Data
+        - name: ui
+          hostPath:
+            path: /var/lib/aion/UI/data-platform-function-product-stock-availability-check/public/
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: data-platform-function-product-stock-availability-check
+  name: data-platform-function-product-stock-availability-check
+spec:
+  selector:
+    run: data-platform-function-product-stock-availability-check
+  type: NodePort
+  ports:
+    - name: api
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+      nodePort: 30884
