@@ -17,13 +17,25 @@ type SDC struct {
 }
 
 type Message struct {
-	ProductStockAvailability *ProductStockAvailability `json:"ProductStockAvailability"`
+	Header Header `json:"ProductStockAvailabilityCheck"`
 }
 
-type ProductStockAvailability struct {
-	BusinessPartner              int     `json:"BusinessPartner"`
-	Product                      string  `json:"Product"`
-	Plant                        string  `json:"Plant"`
-	ProductStockAvailabilityDate string  `json:"ProductStockAvailabilityDate"`
-	AvailableProductStock        float32 `json:"AvailableProductStock"`
+type Header struct {
+	BusinessPartner                 int     `json:"BusinessPartner"`
+	Product                         string  `json:"Product"`
+	Plant                           string  `json:"Plant"`
+	Batch                           string  `json:"Batch"`
+	RequestedQuantity               float32 `json:"RequestedQuantity"`
+	ProductStockAvailabilityDate    string  `json:"ProductStockAvailabilityDate"`
+	OrderID                         int     `json:"OrderID"`
+	OrderItem                       int     `json:"OrderItem"`
+	Project                         string  `json:"Project"`
+	InventoryStockType              string  `json:"InventoryStockType"`
+	InventorySpecialStockType       string  `json:"InventorySpecialStockType"`
+	AvailableProductStock           float32 `json:"AvailableProductStock"`
+	CheckedQuantity                 float32 `json:"CheckedQuantity"`
+	CheckedDate                     string  `json:"CheckedDate"`
+	OpenConfirmedQuantityInBaseUnit float32 `json:"OpenConfirmedQuantityInBaseUnit"`
+	StockIsFullyChecked             bool    `json:"StockIsFullyChecked"`
+	Suffix                          string  `json:"Suffix"`
 }

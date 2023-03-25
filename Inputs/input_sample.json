@@ -1,35 +1,35 @@
 {
-  "connection_key":"response",
-  "result":true,
-  "redis_key":"abcdefg",
-  "filepath":"/var/lib/aion/Data/rededge_sdc/abcdef.json",
+  "connection_key": "requests",
+  "result": true,
+  "redis_key": "abcdefg",
+  "filepath": "/var/lib/aion/Data/rededge_sdc/abcdef.json",
   "api_status_code": 200,
   "runtime_session_id": "boi9ar543dg91ipdnspi099u231280ab0v8af0ew",
-  "business_partner":101,
-  "service_label":"PRODUCT_STOCK",
-  "ProductStock":{
-    "BusinessPartner":201,
-    "Product":"A3750",
-    "Plant":"A001",
-    "StorageLocation":"",
-    "Batch":"",
-    "OrderID":null,
-    "OrderItem":null,
-    "Project":"",
-    "InventoryStockType":"",
-    "InventorySpecialStockType":"",
-    "ProductBaseUnit":"",
-    "ProductStock":"",
-    "Availability":{
-      "BatchValidityEndDate":"",
-      "ProductStockAvailabilityDate":"2023-01-17",
-      "AvailableProductStock":null
-    }
+  "business_partner": null,
+  "service_label": "FUNCTION_PRODUCT_STOCK_AVAILABILITY_CHECK",
+  "api_type": "function",
+  "ProductStockAvailabilityCheck": {
+    "BusinessPartner": 102,
+    "Product": "A3750",
+    "Plant": "AB02",
+    "Batch": "",
+    "RequestedQuantity": 3000,
+    "ProductStockAvailabilityDate": "2023-02-15",
+    "OrderID": null,
+    "OrderItem": null,
+    "Project": "",
+    "InventoryStockType": "",
+    "InventorySpecialStockType": "",
+    "AvailableProductStock": null,
+    "CheckedQuantity": null,
+    "CheckedDate": "",
+    "OpenConfirmedQuantityInBaseUnit": null,
+    "StockIsFullyChecked": null,
+    "Suffix": "AB01"
   },
-  "api_schema":"DPFMProductStockReads",
-  "accepter":[
+  "api_schema": "DPFMFunctionProductStockAvailabilityCheck",
+  "accepter": [
     "All"
   ],
-  "product_stock_code":"",
-  "deleted":false
+  "deleted": false
 }

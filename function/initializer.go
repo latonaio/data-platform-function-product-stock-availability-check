@@ -39,12 +39,35 @@ func (f *Function) CreateSdc(
 
 	go func(wg *sync.WaitGroup) {
 		defer wg.Done()
-		// 1. Product Stock Availability
-		psdc.ProductStockAvailability, e = f.ProductStockAvailability(sdc, psdc)
-		if e != nil {
-			err = e
-			return
+
+		if sdc.Header.Batch == nil || *sdc.Header.Batch == "" {
+			// 1-1. Product Stock Availability
+			psdc.ProductStockAvailability, e = f.ProductStockAvailability(sdc, psdc)
+			if e != nil {
+				err = e
+				return
+			}
+		} else {
+			// 1-2. Product Stock Availability By Lotto
+			psdc.ProductStockAvailability, e = f.ProductStockAvailabilityBylotto(sdc, psdc)
+			if e != nil {
+				err = e
+				return
+			}
 		}
+
+		//2-2,2-3. 利用可能在庫と要求数量の比較 /1-1,1-2
+		if psdc.ProductStockAvailability.AvailableProductStock >= *sdc.Header.RequestedQuantity {
+			psdc.ComparisonStock = f.ComparisonAvailableStock(sdc, psdc)
+
+		} else {
+			psdc.ComparisonStock = f.ComparisonRequestedStock(sdc, psdc)
+
+		}
+
+		//3. 利用可能在庫の再計算 /1-1,1-2,2-3
+		psdc.RecalculatedAvailableProductStock = f.RecalculatedAvailableProductStock(sdc, psdc)
+
 	}(&wg)
 
 	wg.Wait()
@@ -54,7 +77,7 @@ func (f *Function) CreateSdc(
 
 	f.l.Info(psdc)
 
-	f.SetValue(psdc, osdc)
+	f.SetValue(sdc, psdc, osdc)
 
 	return nil
 }

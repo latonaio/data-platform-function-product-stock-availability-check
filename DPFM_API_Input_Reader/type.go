@@ -9,7 +9,7 @@ type SDC struct {
 	RuntimeSessionID  string   `json:"runtime_session_id"`
 	BusinessPartnerID *int     `json:"business_partner"`
 	ServiceLabel      string   `json:"service_label"`
-	Header            Header   `json:"ProductStock"`
+	Header            Header   `json:"ProductStockAvailabilityCheck"`
 	APISchema         string   `json:"api_schema"`
 	Accepter          []string `json:"accepter"`
 	ProductStockCode  string   `json:"product_stock_code"`
@@ -17,23 +17,21 @@ type SDC struct {
 }
 
 type Header struct {
-	BusinessPartner           int          `json:"BusinessPartner"`
-	Product                   string       `json:"Product"`
-	Plant                     string       `json:"Plant"`
-	StorageLocation           *string      `json:"StorageLocation"`
-	Batch                     *string      `json:"Batch"`
-	OrderID                   *int         `json:"OrderID"`
-	OrderItem                 *int         `json:"OrderItem"`
-	Project                   *string      `json:"Project"`
-	InventoryStockType        *string      `json:"InventoryStockType"`
-	InventorySpecialStockType *string      `json:"InventorySpecialStockType"`
-	ProductBaseUnit           *string      `json:"ProductBaseUnit"`
-	ProductStock              *string      `json:"ProductStock"`
-	Availability              Availability `json:"Availability"`
-}
-
-type Availability struct {
-	BatchValidityEndDate         *string  `json:"BatchValidityEndDate"`
-	ProductStockAvailabilityDate string   `json:"ProductStockAvailabilityDate"`
-	AvailableProductStock        *float32 `json:"AvailableProductStock"`
+	BusinessPartner                 *int     `json:"BusinessPartner"`
+	Product                         *string  `json:"Product"`
+	Plant                           *string  `json:"Plant"`
+	Batch                           *string  `json:"Batch"`
+	RequestedQuantity               *float32 `json:"RequestedQuantity"`
+	ProductStockAvailabilityDate    *string  `json:"ProductStockAvailabilityDate"`
+	OrderID                         *int     `json:"OrderID"`
+	OrderItem                       *int     `json:"OrderItem"`
+	Project                         *string  `json:"Project"`
+	InventoryStockType              *string  `json:"InventoryStockType"`
+	InventorySpecialStockType       *string  `json:"InventorySpecialStockType"`
+	AvailableProductStock           *float32 `json:"AvailableProductStock"`
+	CheckedQuantity                 *float32 `json:"CheckedQuantity"`
+	CheckedDate                     *string  `json:"CheckedDate"`
+	OpenConfirmedQuantityInBaseUnit *float32 `json:"OpenConfirmedQuantityInBaseUnit"`
+	StockIsFullyChecked             *bool    `json:"StockIsFullyChecked"`
+	Suffix                          *string  `json:"Suffix"`
 }

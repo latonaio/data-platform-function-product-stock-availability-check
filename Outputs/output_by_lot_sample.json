@@ -1,0 +1,37 @@
+{
+    "connection_key": "requests",
+    "result": true,
+    "redis_key": "abcdefg",
+    "filepath": "/var/lib/aion/Data/rededge_sdc/abcdef.json",
+    "api_status_code": 200,
+    "runtime_session_id": "boi9ar543dg91ipdnspi099u231280ab0v8af0ew",
+    "business_partner": null,
+    "service_label": "FUNCTION_PRODUCT_STOCK_AVAILABILITY_CHECK",
+    "message": {
+        "ProductStockAvailabilityCheck": {
+            "BusinessPartner": 102,
+            "Product": "A3750",
+            "Plant": "AB02",
+            "Batch": "A001",
+            "RequestedQuantity": 3000,
+            "ProductStockAvailabilityDate": "2023-02-15",
+            "OrderID": 0,
+            "OrderItem": 0,
+            "Project": "",
+            "InventoryStockType": "",
+            "InventorySpecialStockType": "",
+            "AvailableProductStock": 0,
+            "CheckedQuantity": 13,
+            "CheckedDate": "2023-02-15",
+            "OpenConfirmedQuantityInBaseUnit": -2987,
+            "StockIsFullyChecked": false,
+            "Suffix": "AB01"
+        }
+    },
+    "api_schema": "DPFMFunctionProductStockAvailabilityCheck",
+    "accepter": [
+        "All"
+    ],
+    "product_stock_code": "",
+    "deleted": false
+}
