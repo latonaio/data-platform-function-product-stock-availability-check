@@ -14,15 +14,15 @@
             "Plant": "AB02",
             "StorageLocation": "",
             "StorageBin": "",
-            "Batch": "",
+            "Batch": "A001",
             "RequestedQuantity": 3000,
             "ProductStockAvailabilityDate": "2023-02-15",
             "InventoryStockType": "",
             "InventorySpecialStockType": "",
             "AvailableProductStock": 0,
-            "CheckedQuantity": 100,
+            "CheckedQuantity": 496,
             "CheckedDate": "2023-02-15",
-            "OpenConfirmedQuantityInBaseUnit": -2900,
+            "OpenConfirmedQuantityInBaseUnit": -2504,
             "StockIsFullyChecked": false,
             "Suffix": "AB01"
         }

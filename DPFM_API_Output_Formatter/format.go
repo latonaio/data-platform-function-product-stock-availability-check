@@ -23,10 +23,10 @@ func ConvertToHeader(
 		return nil, err
 	}
 
-	header.CheckedQuantity = psdc.ComparisonStock.CheckedQuantity
-	header.CheckedDate = psdc.ComparisonStock.CheckedDate
-	header.OpenConfirmedQuantityInBaseUnit = psdc.ComparisonStock.OpenConfirmedQuantityInBaseUnit
-	header.StockIsFullyChecked = psdc.ComparisonStock.StockIsFullyChecked
+	header.CheckedQuantity = psdc.StockAndQuantity.CheckedQuantity
+	header.CheckedDate = psdc.StockAndQuantity.CheckedDate
+	header.OpenConfirmedQuantityInBaseUnit = psdc.StockAndQuantity.OpenConfirmedQuantityInBaseUnit
+	header.StockIsFullyChecked = psdc.StockAndQuantity.StockIsFullyChecked
 	header.AvailableProductStock = psdc.RecalculatedAvailableProductStock.RecalculatedAvailableProductStock
 
 	return header, nil

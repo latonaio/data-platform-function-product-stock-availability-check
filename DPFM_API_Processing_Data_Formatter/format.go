@@ -4,8 +4,28 @@ import (
 	"data-platform-function-product-stock-availability-check/DPFM_API_Caller/requests"
 	dpfm_api_input_reader "data-platform-function-product-stock-availability-check/DPFM_API_Input_Reader"
 	"database/sql"
-	"fmt"
+
+	"golang.org/x/xerrors"
 )
+
+func (psdc *SDC) ConvertToProductStockAvailabilityType(isProductStockAvailability, isProductStockAvailabilityByBatch, isProductStockAvailabilityByStorageBin, isProductStockAvailabilityByStorageBinByBatch bool) *ProductStockAvailabilityType {
+	pm := &requests.ProductStockAvailabilityType{}
+
+	pm.IsProductStockAvailability = isProductStockAvailability
+	pm.IsProductStockAvailabilityByBatch = isProductStockAvailabilityByBatch
+	pm.IsProductStockAvailabilityByStorageBin = isProductStockAvailabilityByStorageBin
+	pm.IsProductStockAvailabilityByStorageBinByBatch = isProductStockAvailabilityByStorageBinByBatch
+
+	data := pm
+	res := ProductStockAvailabilityType{
+		IsProductStockAvailability:                    data.IsProductStockAvailability,
+		IsProductStockAvailabilityByBatch:             data.IsProductStockAvailabilityByBatch,
+		IsProductStockAvailabilityByStorageBin:        data.IsProductStockAvailabilityByStorageBin,
+		IsProductStockAvailabilityByStorageBinByBatch: data.IsProductStockAvailabilityByStorageBinByBatch,
+	}
+
+	return &res
+}
 
 // 1. Product Stock Availability
 func (psdc *SDC) ConvertToProductStockAvailabilityKey(sdc *dpfm_api_input_reader.SDC) *ProductStockAvailabilityKey {
@@ -28,20 +48,16 @@ func (psdc *SDC) ConvertToProductStockAvailabilityKey(sdc *dpfm_api_input_reader
 }
 
 func (psdc *SDC) ConvertToProductStockAvailability(rows *sql.Rows) (*ProductStockAvailability, error) {
+	defer rows.Close()
 	pm := &requests.ProductStockAvailability{}
 
-	for i := 0; true; i++ {
+	i := 0
+	for rows.Next() {
+		i++
 
-		if !rows.Next() {
-			if i == 0 {
-				return nil, fmt.Errorf("'data_platform_product_stock_availability_data'テーブルに対象のレコードが存在しません。")
-			} else {
-				break
-			}
-		}
 		err := rows.Scan(
-			&pm.BusinessPartner,
 			&pm.Product,
+			&pm.BusinessPartner,
 			&pm.Plant,
 			&pm.ProductStockAvailabilityDate,
 			&pm.AvailableProductStock,
@@ -50,11 +66,14 @@ func (psdc *SDC) ConvertToProductStockAvailability(rows *sql.Rows) (*ProductStoc
 			return nil, err
 		}
 	}
+	if i == 0 {
+		return nil, xerrors.Errorf("'data_platform_product_stock_product_stock_availability_data'テーブルに対象のレコードが存在しません。")
+	}
 
 	data := pm
 	res := &ProductStockAvailability{
-		BusinessPartner:              data.BusinessPartner,
 		Product:                      data.Product,
+		BusinessPartner:              data.BusinessPartner,
 		Plant:                        data.Plant,
 		ProductStockAvailabilityDate: data.ProductStockAvailabilityDate,
 		AvailableProductStock:        data.AvailableProductStock,
@@ -63,19 +82,19 @@ func (psdc *SDC) ConvertToProductStockAvailability(rows *sql.Rows) (*ProductStoc
 	return res, nil
 }
 
-func (psdc *SDC) ConvertToProductStockAvailabilityKeyBylotto(sdc *dpfm_api_input_reader.SDC) *ProductStockAvailabilityKeyBylotto {
-	pm := &requests.ProductStockAvailabilityKeyBylotto{
-		BusinessPartner:              *sdc.Header.BusinessPartner,
+func (psdc *SDC) ConvertToProductStockAvailabilityByBatchKey(sdc *dpfm_api_input_reader.SDC) *ProductStockAvailability {
+	pm := &requests.ProductStockAvailability{
 		Product:                      *sdc.Header.Product,
+		BusinessPartner:              *sdc.Header.BusinessPartner,
 		Plant:                        *sdc.Header.Plant,
 		Batch:                        *sdc.Header.Batch,
 		ProductStockAvailabilityDate: *sdc.Header.ProductStockAvailabilityDate,
 	}
 
 	data := pm
-	res := ProductStockAvailabilityKeyBylotto{
-		BusinessPartner:              data.BusinessPartner,
+	res := ProductStockAvailability{
 		Product:                      data.Product,
+		BusinessPartner:              data.BusinessPartner,
 		Plant:                        data.Plant,
 		Batch:                        data.Batch,
 		ProductStockAvailabilityDate: data.ProductStockAvailabilityDate,
@@ -84,21 +103,17 @@ func (psdc *SDC) ConvertToProductStockAvailabilityKeyBylotto(sdc *dpfm_api_input
 	return &res
 }
 
-func (psdc *SDC) ConvertToProductStockAvailabilityBylotto(rows *sql.Rows) (*ProductStockAvailability, error) {
+func (psdc *SDC) ConvertToProductStockAvailabilityByBatch(rows *sql.Rows) (*ProductStockAvailability, error) {
+	defer rows.Close()
 	pm := &requests.ProductStockAvailability{}
 
-	for i := 0; true; i++ {
+	i := 0
+	for rows.Next() {
+		i++
 
-		if !rows.Next() {
-			if i == 0 {
-				return nil, fmt.Errorf("'data_platform_product_stock_availability_data'テーブルに対象のレコードが存在しません。")
-			} else {
-				break
-			}
-		}
 		err := rows.Scan(
-			&pm.BusinessPartner,
 			&pm.Product,
+			&pm.BusinessPartner,
 			&pm.Plant,
 			&pm.Batch,
 			&pm.ProductStockAvailabilityDate,
@@ -108,11 +123,14 @@ func (psdc *SDC) ConvertToProductStockAvailabilityBylotto(rows *sql.Rows) (*Prod
 			return nil, err
 		}
 	}
+	if i == 0 {
+		return nil, xerrors.Errorf("'data_platform_product_stock_product_stock_availability_by_batch_data'テーブルに対象のレコードが存在しません。")
+	}
 
 	data := pm
 	res := &ProductStockAvailability{
-		BusinessPartner:              data.BusinessPartner,
 		Product:                      data.Product,
+		BusinessPartner:              data.BusinessPartner,
 		Plant:                        data.Plant,
 		Batch:                        data.Batch,
 		ProductStockAvailabilityDate: data.ProductStockAvailabilityDate,
@@ -122,17 +140,164 @@ func (psdc *SDC) ConvertToProductStockAvailabilityBylotto(rows *sql.Rows) (*Prod
 	return res, nil
 }
 
-// 2
-func (psdc *SDC) ConvertToComparisonAvailableStock(sdc *dpfm_api_input_reader.SDC) *ComparisonStock {
-	pm := &requests.ComparisonStock{
-		CheckedQuantity:                 *sdc.Header.RequestedQuantity,
-		CheckedDate:                     psdc.ProductStockAvailability.ProductStockAvailabilityDate,
-		OpenConfirmedQuantityInBaseUnit: 0,
-		StockIsFullyChecked:             true,
+func (psdc *SDC) ConvertToProductStockAvailabilityByStorageBinKey(sdc *dpfm_api_input_reader.SDC) *ProductStockAvailability {
+	pm := &requests.ProductStockAvailability{
+		Product:                      *sdc.Header.Product,
+		BusinessPartner:              *sdc.Header.BusinessPartner,
+		Plant:                        *sdc.Header.Plant,
+		StorageLocation:              *sdc.Header.StorageLocation,
+		StorageBin:                   *sdc.Header.StorageBin,
+		ProductStockAvailabilityDate: *sdc.Header.ProductStockAvailabilityDate,
 	}
 
 	data := pm
-	res := ComparisonStock{
+	res := ProductStockAvailability{
+		Product:                      data.Product,
+		BusinessPartner:              data.BusinessPartner,
+		Plant:                        data.Plant,
+		StorageLocation:              data.StorageLocation,
+		StorageBin:                   data.StorageBin,
+		ProductStockAvailabilityDate: data.ProductStockAvailabilityDate,
+	}
+
+	return &res
+}
+
+func (psdc *SDC) ConvertToProductStockAvailabilityByStorageBin(rows *sql.Rows) (*ProductStockAvailability, error) {
+	defer rows.Close()
+	pm := &requests.ProductStockAvailability{}
+
+	i := 0
+	for rows.Next() {
+		i++
+
+		err := rows.Scan(
+			&pm.Product,
+			&pm.BusinessPartner,
+			&pm.Plant,
+			&pm.StorageLocation,
+			&pm.StorageBin,
+			&pm.ProductStockAvailabilityDate,
+			&pm.AvailableProductStock,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if i == 0 {
+		return nil, xerrors.Errorf("'data_platform_product_stock_product_stock_availability_by_storage_bin_data'テーブルに対象のレコードが存在しません。")
+	}
+
+	data := pm
+	res := &ProductStockAvailability{
+		Product:                      data.Product,
+		BusinessPartner:              data.BusinessPartner,
+		Plant:                        data.Plant,
+		StorageLocation:              data.StorageLocation,
+		StorageBin:                   data.StorageBin,
+		ProductStockAvailabilityDate: data.ProductStockAvailabilityDate,
+		AvailableProductStock:        data.AvailableProductStock,
+	}
+
+	return res, nil
+}
+
+func (psdc *SDC) ConvertToProductStockAvailabilityByStorageBinByBatchKey(sdc *dpfm_api_input_reader.SDC) *ProductStockAvailability {
+	pm := &requests.ProductStockAvailability{
+		Product:                      *sdc.Header.Product,
+		BusinessPartner:              *sdc.Header.BusinessPartner,
+		Plant:                        *sdc.Header.Plant,
+		StorageLocation:              *sdc.Header.StorageLocation,
+		StorageBin:                   *sdc.Header.StorageBin,
+		Batch:                        *sdc.Header.Batch,
+		ProductStockAvailabilityDate: *sdc.Header.ProductStockAvailabilityDate,
+	}
+
+	data := pm
+	res := ProductStockAvailability{
+		Product:                      data.Product,
+		BusinessPartner:              data.BusinessPartner,
+		Plant:                        data.Plant,
+		StorageLocation:              data.StorageLocation,
+		StorageBin:                   data.StorageBin,
+		Batch:                        data.Batch,
+		ProductStockAvailabilityDate: data.ProductStockAvailabilityDate,
+	}
+
+	return &res
+}
+
+func (psdc *SDC) ConvertToProductStockAvailabilityByStorageBinByBatch(rows *sql.Rows) (*ProductStockAvailability, error) {
+	defer rows.Close()
+	pm := &requests.ProductStockAvailability{}
+
+	i := 0
+	for rows.Next() {
+		i++
+
+		err := rows.Scan(
+			&pm.Product,
+			&pm.BusinessPartner,
+			&pm.Plant,
+			&pm.StorageLocation,
+			&pm.StorageBin,
+			&pm.Batch,
+			&pm.ProductStockAvailabilityDate,
+			&pm.AvailableProductStock,
+		)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if i == 0 {
+		return nil, xerrors.Errorf("'data_platform_product_stock_product_stock_availability_by_storage_bin_by_batch_data'テーブルに対象のレコードが存在しません。")
+	}
+
+	data := pm
+	res := &ProductStockAvailability{
+		Product:                      data.Product,
+		BusinessPartner:              data.BusinessPartner,
+		Plant:                        data.Plant,
+		StorageLocation:              data.StorageLocation,
+		StorageBin:                   data.StorageBin,
+		Batch:                        data.Batch,
+		ProductStockAvailabilityDate: data.ProductStockAvailabilityDate,
+		AvailableProductStock:        data.AvailableProductStock,
+	}
+
+	return res, nil
+}
+
+// 2. 利用可能在庫と要求数量の比較
+func (psdc *SDC) ConvertToComparisonStockAndQuantity(availableProductStock, requestedQuantity float32, isAvailableProductStock, isRequestedQuantity bool) *ComparisonStockAndQuantity {
+	pm := &requests.ComparisonStockAndQuantity{}
+
+	pm.AvailableProductStock = availableProductStock
+	pm.RequestedQuantity = requestedQuantity
+	pm.IsAvailableProductStock = isAvailableProductStock
+	pm.IsRequestedQuantity = isRequestedQuantity
+
+	data := pm
+	res := ComparisonStockAndQuantity{
+		AvailableProductStock:   data.AvailableProductStock,
+		RequestedQuantity:       data.RequestedQuantity,
+		IsAvailableProductStock: data.IsAvailableProductStock,
+		IsRequestedQuantity:     data.IsRequestedQuantity,
+	}
+
+	return &res
+}
+
+func (psdc *SDC) ConvertToStockAndQuantity(checkedQuantity float32, checkedDate string, openConfirmedQuantityInBaseUnit float32, stockIsFullyChecked bool) *StockAndQuantity {
+	pm := &requests.StockAndQuantity{}
+
+	pm.CheckedQuantity = checkedQuantity
+	pm.CheckedDate = checkedDate
+	pm.OpenConfirmedQuantityInBaseUnit = openConfirmedQuantityInBaseUnit
+	pm.StockIsFullyChecked = stockIsFullyChecked
+
+	data := pm
+	res := StockAndQuantity{
 		CheckedQuantity:                 data.CheckedQuantity,
 		CheckedDate:                     data.CheckedDate,
 		OpenConfirmedQuantityInBaseUnit: data.OpenConfirmedQuantityInBaseUnit,
@@ -142,32 +307,18 @@ func (psdc *SDC) ConvertToComparisonAvailableStock(sdc *dpfm_api_input_reader.SD
 	return &res
 }
 
-func (psdc *SDC) ConvertToComparisonRequestedStock(sdc *dpfm_api_input_reader.SDC, difference float32) *ComparisonStock {
-	pm := &requests.ComparisonStock{
-		CheckedQuantity:                 psdc.ProductStockAvailability.AvailableProductStock,
-		CheckedDate:                     psdc.ProductStockAvailability.ProductStockAvailabilityDate,
-		OpenConfirmedQuantityInBaseUnit: difference,
-		StockIsFullyChecked:             false,
-	}
+// 3. 利用可能在庫の再計算
+func (psdc *SDC) ConvertToRecalculatedAvailableProductStock(availableProductStock, checkedQuantity, recalculatedAvailableProductStock float32) *RecalculatedAvailableProductStock {
+	pm := &requests.RecalculatedAvailableProductStock{}
 
-	data := pm
-	res := ComparisonStock{
-		CheckedQuantity:                 data.CheckedQuantity,
-		CheckedDate:                     data.CheckedDate,
-		OpenConfirmedQuantityInBaseUnit: data.OpenConfirmedQuantityInBaseUnit,
-		StockIsFullyChecked:             data.StockIsFullyChecked,
-	}
-
-	return &res
-}
-
-func (psdc *SDC) ConvertToRecalculatedAvailableProductStock(sdc *dpfm_api_input_reader.SDC, difference float32) *RecalculatedAvailableProductStock {
-	pm := &requests.RecalculatedAvailableProductStock{
-		RecalculatedAvailableProductStock: difference,
-	}
+	pm.AvailableProductStock = availableProductStock
+	pm.CheckedQuantity = checkedQuantity
+	pm.RecalculatedAvailableProductStock = recalculatedAvailableProductStock
 
 	data := pm
 	res := RecalculatedAvailableProductStock{
+		AvailableProductStock:             data.AvailableProductStock,
+		CheckedQuantity:                   data.CheckedQuantity,
 		RecalculatedAvailableProductStock: data.RecalculatedAvailableProductStock,
 	}
 
